@@ -35,10 +35,6 @@ namespace AP_Final_Project.Characters
             if (IsMovingUp) Y -= Speed;
             if (IsMovingDown) Y += Speed;
 
-            if (X < 0) X = 0;
-            if (X > 800 - Width) X = 800 - Width;
-            if (Y < 300) Y = 300;
-            if (Y > 600 - Height) Y = 600 - Height;
         }
 
         public override void Draw(Graphics g)

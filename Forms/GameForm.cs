@@ -18,6 +18,8 @@ namespace AP_Final_Project.Forms
         {
             InitializeComponent();
 
+            //fixing the Flickering problem
+            this.DoubleBuffered = true;
             this.ClientSize = new Size(800, 600);
             this.BackColor = Color.Black;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
