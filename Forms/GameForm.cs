@@ -27,6 +27,9 @@ namespace AP_Final_Project.Forms
 
             gameManager = new GameManager(this.ClientSize.Width, this.ClientSize.Height);
 
+            //Conecting the event(s) through event handlers
+            this.Paint += new PaintEventHandler(GameForm_Paint);
+
             //Game Loop starts with adding game timer event !
             gameTimer = new System.Windows.Forms.Timer();
             gameTimer.Interval = 20;
@@ -36,6 +39,11 @@ namespace AP_Final_Project.Forms
         private void GameTimer_Tick(object? sender, EventArgs e)
         {
             gameManager.Update();
+        }
+
+        private void GameForm_Paint(object? sender, PaintEventArgs e)
+        {
+            gameManager.Draw(e.Graphics);
         }
 
         private void GameForm_Load(object sender, EventArgs e)

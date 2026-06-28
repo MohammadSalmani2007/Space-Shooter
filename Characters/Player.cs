@@ -43,7 +43,7 @@ namespace AP_Final_Project.Characters
 
         public override void Draw(Graphics g)
         {
-            
+            g.FillRectangle(Brushes.LimeGreen, X, Y, Width, Height);
         }
     }
 }
