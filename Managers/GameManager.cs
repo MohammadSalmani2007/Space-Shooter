@@ -15,6 +15,8 @@ namespace AP_Final_Project.Managers
         private int gameWidth;
         private int gameHeight;
 
+        private int shotCooldownCounter = 0;
+
 
         public GameManager(int windowWidth, int windowHeight)
         {
@@ -28,13 +30,36 @@ namespace AP_Final_Project.Managers
 
         public void Update()
         {
+            //I transferred position updatings into the UpdateEntityPositions method !
+            HandlePlayerShooting();
+            UpdateEntityPositions();
+            
+        }
+        public void HandlePlayerShooting()
+        {
+            if (shotCooldownCounter > 0) shotCooldownCounter--;
+
+            if(MainPlayer.IsShooting && shotCooldownCounter == 0)
+            {
+                int bulletX = MainPlayer.X + (MainPlayer.Width / 2) - 3;
+                int bullerY = MainPlayer.Y;
+
+                ActiveBullets.Add(new PlayerBullet(bulletX, bullerY));
+                shotCooldownCounter = MainPlayer.FireRate / 20;
+            }
+        }
+
+        public void UpdateEntityPositions()
+        {
             MainPlayer.Update();
             ApplyBoundryChecking();
+
+            foreach (var bullet in ActiveBullets) bullet.Update();
         }
-        
         public void Draw(Graphics g)//Draw must be out of Game Form !!
         {
             MainPlayer.Draw(g);//Must be implement in Player.cs/and others...
+            foreach (var bullet in ActiveBullets) bullet.Draw(g);
         }
 
         private void ApplyBoundryChecking()//Locking the player in the game window.

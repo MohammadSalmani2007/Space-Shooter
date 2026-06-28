@@ -20,7 +20,7 @@ namespace AP_Final_Project.Forms
 
             //fixing the Flickering problem
             this.DoubleBuffered = true;
-            this.ClientSize = new Size(800, 600);
+            this.ClientSize = new Size(900, 700);
             this.BackColor = Color.Black;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -59,6 +59,8 @@ namespace AP_Final_Project.Forms
             if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D) player.IsMovingRight = true;
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W) player.IsMovingUp = true;
             if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S) player.IsMovingDown = true;
+
+            if (e.KeyCode == Keys.Space) player.IsShooting = true;
         }
 
         private void GameForm_KeyUp(object? sender, KeyEventArgs e)
@@ -70,6 +72,7 @@ namespace AP_Final_Project.Forms
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W) player.IsMovingUp = false;
             if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S) player.IsMovingDown = false;
 
+            if (e.KeyCode == Keys.Space) player.IsShooting = false;
         }
 
         private void GameForm_Load(object sender, EventArgs e)

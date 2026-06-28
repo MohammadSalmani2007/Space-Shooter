@@ -11,4 +11,22 @@ namespace AP_Final_Project.Characters
         {
         }
     }
+
+    public class PlayerBullet : Bullet
+    {
+        public PlayerBullet(int x, int y)
+            : base(x, y, width: 6, height: 15, speed: 10)
+        {
+        }
+
+        public override void Update()
+        {
+            Y -= Speed;//Player bullets move upward
+        }
+
+        public override void Draw(Graphics g)
+        {
+            g.FillRectangle(Brushes.Yellow, X, Y, Width, Height);
+        }
+    }
 }

@@ -11,7 +11,9 @@ namespace AP_Final_Project.Characters
         public bool IsMovingUp {  get; set; }
         public bool IsMovingDown {  get; set; }
 
+        public bool IsShooting { get; set; }
 
+        public int FireRate { get; set; }
         public int Score {  get; set; }
         public int Coins {  get; set; }
 
@@ -21,11 +23,14 @@ namespace AP_Final_Project.Characters
             Score = 0;
             Coins = 0;
 
-
             IsMovingLeft = false;
             IsMovingRight = false;
             IsMovingUp = false;
             IsMovingDown = false;
+
+            FireRate = 200;
+            IsShooting = false;
+
         }
 
         public override void Update()
