@@ -13,6 +13,7 @@ namespace AP_Final_Project.Forms
     public partial class GameForm : Form
     {
         private GameManager gameManager;
+        private System.Windows.Forms.Timer gameTimer;
         public GameForm()
         {
             InitializeComponent();
@@ -25,7 +26,16 @@ namespace AP_Final_Project.Forms
 
 
             gameManager = new GameManager(this.ClientSize.Width, this.ClientSize.Height);
-            
+
+            //Game Loop starts with adding game timer event !
+            gameTimer = new System.Windows.Forms.Timer();
+            gameTimer.Interval = 20;
+            gameTimer.Tick += new EventHandler(GameTimer_Tick);
+            gameTimer.Start();
+        }
+        private void GameTimer_Tick(object? sender, EventArgs e)
+        {
+            gameManager.Update();
         }
 
         private void GameForm_Load(object sender, EventArgs e)
