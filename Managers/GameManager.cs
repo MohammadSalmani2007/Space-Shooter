@@ -33,6 +33,7 @@ namespace AP_Final_Project.Managers
             //I transferred position updatings into the UpdateEntityPositions method !
             HandlePlayerShooting();
             UpdateEntityPositions();
+            CleanUpOutOfBounds();
             
         }
         public void HandlePlayerShooting()
@@ -55,6 +56,10 @@ namespace AP_Final_Project.Managers
             ApplyBoundryChecking();
 
             foreach (var bullet in ActiveBullets) bullet.Update();
+        }
+        private void CleanUpOutOfBounds()
+        {
+            ActiveBullets.RemoveAll(b => b.Y + b.Height < 0 || b.Y > gameHeight);
         }
         public void Draw(Graphics g)//Draw must be out of Game Form !!
         {
