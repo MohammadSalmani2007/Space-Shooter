@@ -16,6 +16,8 @@ namespace AP_Final_Project.Managers
         private int gameHeight;
 
         private int shotCooldownCounter = 0;
+        private int enemySpawnCounter = 0;
+        private Random random = new Random();
 
 
         public GameManager(int windowWidth, int windowHeight)
@@ -31,12 +33,25 @@ namespace AP_Final_Project.Managers
         public void Update()
         {
             //I transferred position updatings into the UpdateEntityPositions method !
+            HandleSpawning();
             HandlePlayerShooting();
             UpdateEntityPositions();
             CleanUpOutOfBounds();
             
         }
-        public void HandlePlayerShooting()
+        private void HandleSpawning()
+        {
+            enemySpawnCounter++;
+            if(enemySpawnCounter >= 40)//Means: every 40 * 20 msec = 0.8 sec
+            {
+                int spawnX = random.Next(0 , gameWidth - 40);//40 is enemy's width, later we should pay attention to the all types of enemies
+                int spawnY = -40;
+
+                ActiveEnemies.Add(new StandardEnemy(spawnX, spawnY));
+                enemySpawnCounter = 0;
+            }
+        }
+        private void HandlePlayerShooting()
         {
             if (shotCooldownCounter > 0) shotCooldownCounter--;
 
@@ -50,21 +65,24 @@ namespace AP_Final_Project.Managers
             }
         }
 
-        public void UpdateEntityPositions()
+        private void UpdateEntityPositions()
         {
             MainPlayer.Update();
             ApplyBoundryChecking();
 
+            foreach (var enemy in ActiveEnemies) enemy.Update();
             foreach (var bullet in ActiveBullets) bullet.Update();
         }
         private void CleanUpOutOfBounds()
         {
             ActiveBullets.RemoveAll(b => b.Y + b.Height < 0 || b.Y > gameHeight);
+            ActiveEnemies.RemoveAll(e => e.Y > gameHeight);
         }
         public void Draw(Graphics g)//Draw must be out of Game Form !!
         {
             MainPlayer.Draw(g);//Must be implement in Player.cs/and others...
             foreach (var bullet in ActiveBullets) bullet.Draw(g);
+            foreach (var enemy in ActiveEnemies) enemy.Draw(g);
         }
 
         private void ApplyBoundryChecking()//Locking the player in the game window.
