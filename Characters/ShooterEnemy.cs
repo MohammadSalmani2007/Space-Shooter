@@ -16,7 +16,7 @@ namespace AP_Final_Project.Characters
             fireCoolDownCounter = random.Next(40 , 90);
         }
 
-        public void UpdateAndShooter(List<Bullet> activeBullets)
+        public void UpdateAndShoot(List<Bullet> activeBullets)
         {
             Y += Speed;
 

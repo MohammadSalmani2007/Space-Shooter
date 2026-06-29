@@ -45,10 +45,28 @@ namespace AP_Final_Project.Managers
             enemySpawnCounter++;
             if(enemySpawnCounter >= 40)//Means: every 40 * 20 msec = 0.8 sec
             {
-                int spawnX = random.Next(0 , gameWidth - 40);//40 is enemy's width, later we should pay attention to the all types of enemies
-                int spawnY = -40;
+                int spawnX = random.Next(0 , gameWidth - 70);//40 is enemy's width, later we should pay attention to the all types of enemies
+                int spawnY = -70;
 
-                ActiveEnemies.Add(new StandardEnemy(spawnX, spawnY));
+                int enemyType = random.Next(4);//We havn't implement HeavyTankEnemy yet ! So it's 4
+
+                switch (enemyType)
+                {
+                    case 0:
+                        ActiveEnemies.Add(new StandardEnemy(spawnX, spawnY));
+                        break;
+                    case 1:
+                        ActiveEnemies.Add(new ScoutEnemy(spawnX, spawnY));
+                        break;
+                    case 2:
+                        ActiveEnemies.Add(new ShooterEnemy(spawnX, spawnY));
+                        break;
+                    case 3:
+                        ActiveEnemies.Add(new TerroristEnemy(spawnX, spawnY));
+                        break;
+
+                }
+
                 enemySpawnCounter = 0;
             }
         }
@@ -71,7 +89,20 @@ namespace AP_Final_Project.Managers
             MainPlayer.Update();
             ApplyBoundryChecking();
 
-            foreach (var enemy in ActiveEnemies) enemy.Update();
+            foreach (var enemy in ActiveEnemies)
+            {
+                if (enemy is ShooterEnemy shooter)
+                {
+                    shooter.UpdateAndShoot(ActiveBullets);
+                }
+                else if (enemy is TerroristEnemy terrorist)
+                {
+                    terrorist.UpdateWithTarget(MainPlayer.X, MainPlayer.Y);
+                }
+                else
+                    enemy.Update();
+            }
+
             foreach (var bullet in ActiveBullets) bullet.Update();
         }
         private void CheckAllCollisions()
