@@ -36,6 +36,7 @@ namespace AP_Final_Project.Managers
             HandleSpawning();
             HandlePlayerShooting();
             UpdateEntityPositions();
+            CheckAllCollisions();
             CleanUpOutOfBounds();
             
         }
@@ -72,6 +73,35 @@ namespace AP_Final_Project.Managers
 
             foreach (var enemy in ActiveEnemies) enemy.Update();
             foreach (var bullet in ActiveBullets) bullet.Update();
+        }
+        private void CheckAllCollisions()
+        {
+            foreach(var bullet in ActiveBullets.ToList())//ToList is important because we want to remove some items
+            {
+                foreach(var enemy in ActiveEnemies.ToList())
+                {
+                    if (bullet.GetBounds().IntersectsWith(enemy.GetBounds()))
+                    {
+                        enemy.HP--;
+                        ActiveBullets.Remove(bullet);
+
+                        if(enemy.HP <= 0)
+                        {
+                            ActiveEnemies.Remove(enemy);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            foreach (var enemy in ActiveEnemies.ToList())
+            {
+                if (enemy.GetBounds().IntersectsWith(MainPlayer.GetBounds()))
+                {
+                    MainPlayer.HP--;
+                    ActiveEnemies.Remove(enemy);
+                }
+            }
         }
         private void CleanUpOutOfBounds()
         {

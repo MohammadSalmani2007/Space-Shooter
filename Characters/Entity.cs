@@ -30,7 +30,12 @@ namespace AP_Final_Project.Characters
 
         public virtual void Draw(Graphics g)
         {
+            g.FillRectangle(Brushes.White, X, Y, Width, Height);
+        }
 
+        public Rectangle GetBounds()//This method returs the scope of the entity
+        {
+            return new Rectangle(X, Y, Width, Height);
         }
     }
 }
