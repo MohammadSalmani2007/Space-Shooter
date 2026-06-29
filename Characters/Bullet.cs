@@ -29,4 +29,22 @@ namespace AP_Final_Project.Characters
             g.FillRectangle(Brushes.Yellow, X, Y, Width, Height);
         }
     }
+
+    public class EnemyBullet : Bullet
+    {
+        public EnemyBullet(int x, int y)
+            : base(x, y, width: 6, height: 15, speed: 7)
+        {
+
+        }
+        public override void Update()
+        {
+            Y += Speed;
+        }
+
+        public override void Draw(Graphics g)
+        {
+            g.FillRectangle(Brushes.Red, X, Y, Width, Height);
+        }
+    }
 }

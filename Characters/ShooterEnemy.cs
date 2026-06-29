@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace AP_Final_Project.Characters
+{
+    public class ShooterEnemy : Enemy
+    {
+        private int fireCoolDownCounter;
+        private Random random = new Random();
+
+
+        public ShooterEnemy(int x, int y)
+            : base(x, y, width: 45, height: 45, speed: 3, hp: 2, scoreValue: 30)
+        {
+            fireCoolDownCounter = random.Next(40 , 90);
+        }
+
+        public void UpdateAndShooter(List<Bullet> activeBullets)
+        {
+            Y += Speed;
+
+            fireCoolDownCounter--;
+
+            if (fireCoolDownCounter <= 0)
+            {
+                int bulletX = X + (Width / 2) - 3;
+                int bulletY = Y + Height;
+
+                activeBullets.Add(new EnemyBullet(bulletX, bulletY));
+                fireCoolDownCounter = 80;//We can change it to be random
+            }
+
+        }
+
+        public override void Update()
+        {
+            Y += Speed;
+        }
+
+        public override void Draw(Graphics g)
+        {
+            g.FillRectangle(Brushes.DarkViolet, X, Y, Width, Height);
+        }
+    }
+}
