@@ -109,19 +109,31 @@ namespace AP_Final_Project.Managers
         {
             foreach(var bullet in ActiveBullets.ToList())//ToList is important because we want to remove some items
             {
-                foreach(var enemy in ActiveEnemies.ToList())
+                if (bullet is PlayerBullet)
                 {
-                    if (bullet.GetBounds().IntersectsWith(enemy.GetBounds()))
+                    foreach (var enemy in ActiveEnemies.ToList())
                     {
-                        enemy.HP--;
-                        ActiveBullets.Remove(bullet);
-
-                        if(enemy.HP <= 0)
+                        if (bullet.GetBounds().IntersectsWith(enemy.GetBounds()))
                         {
-                            ActiveEnemies.Remove(enemy);
+                            enemy.HP--;
+                            ActiveBullets.Remove(bullet);
+
+                            if (enemy.HP <= 0)
+                            {
+                                ActiveEnemies.Remove(enemy);
+                            }
+                            break;
                         }
-                        break;
                     }
+                }
+                if(bullet is EnemyBullet)
+                {
+                    if (bullet.GetBounds().IntersectsWith(MainPlayer.GetBounds()))
+                    {
+                        MainPlayer.HP--;
+                        ActiveBullets.Remove(bullet);
+                    }
+
                 }
             }
 
