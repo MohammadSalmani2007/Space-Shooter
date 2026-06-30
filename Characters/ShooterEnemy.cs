@@ -10,8 +10,8 @@ namespace AP_Final_Project.Characters
         private Random random = new Random();
 
 
-        public ShooterEnemy(int x, int y)
-            : base(x, y, width: 45, height: 45, speed: 3, hp: 2, scoreValue: 30)
+        public ShooterEnemy(int x, int y, int wave)
+            : base(x, y, width: 45, height: 45, speed: 3, hp: 2, scoreValue: 30, currentWave: wave)
         {
             fireCoolDownCounter = random.Next(40 , 90);
         }

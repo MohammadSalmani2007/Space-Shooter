@@ -9,8 +9,8 @@ namespace AP_Final_Project.Characters
     {
         private int fireCoolDownCounter;
 
-        public HeavyTankEnemy(int x, int y)
-            : base(x, y, width: 65 , height: 65, speed: 1, hp: 5, scoreValue: 50)
+        public HeavyTankEnemy(int x, int y, int wave)
+            : base(x, y, width: 65 , height: 65, speed: 1, hp: 5, scoreValue: 50, currentWave: wave)
         {
             fireCoolDownCounter = 80;
         }

@@ -11,8 +11,8 @@ namespace AP_Final_Project.Characters
         private double angle = 0;
 
 
-        public ScoutEnemy(int x, int y)
-            : base(x, y, width: 35, height: 35, speed: 5, hp: 1, scoreValue: 20)
+        public ScoutEnemy(int x, int y, int wave)
+            : base(x, y, width: 35, height: 35, speed: 5, hp: 1, scoreValue: 20, currentWave: wave)
         {
             centerX = x;
         }

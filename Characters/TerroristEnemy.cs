@@ -8,8 +8,8 @@ namespace AP_Final_Project.Characters
     {
         private bool isLockOn = false;
         private int targetX = 0;
-        public TerroristEnemy(int x, int y)
-            : base(x, y, width: 40, height: 40, speed: 3, hp: 1, scoreValue: 40)
+        public TerroristEnemy(int x, int y, int wave)
+            : base(x, y, width: 40, height: 40, speed: 3, hp: 1, scoreValue: 40, currentWave: wave)
         {
         }
 

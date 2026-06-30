@@ -11,6 +11,7 @@ namespace AP_Final_Project.Managers
         public Player MainPlayer { get; private set; }
         public List<Enemy> ActiveEnemies { get; private set; }
         public List<Bullet> ActiveBullets { get; private set; }
+        public WaveManager WaveManager { get; private set; }
 
         private int gameWidth;
         private int gameHeight;
@@ -20,6 +21,7 @@ namespace AP_Final_Project.Managers
         private Random random = new Random();
 
         public bool IsGameOver { get; private set; } = false;
+        public bool IsGameWon { get; private set; } = false;
 
 
         public GameManager(int windowWidth, int windowHeight)
@@ -30,6 +32,7 @@ namespace AP_Final_Project.Managers
             MainPlayer = new Player(gameWidth/2 - 25, gameHeight - 80);//Assuming a position for player (middle-down of game window)
             ActiveEnemies = new List<Enemy>();
             ActiveBullets = new List<Bullet>();
+            WaveManager = new WaveManager();
         }
 
         public void Update()
@@ -49,32 +52,64 @@ namespace AP_Final_Project.Managers
         }
         private void HandleSpawning()
         {
-            enemySpawnCounter++;
-            if(enemySpawnCounter >= 40)//Means: every 40 * 20 msec = 0.8 sec
+            if (WaveManager.IsInWaveTransition)
             {
-                int spawnX = random.Next(0 , gameWidth - 70);//40 is enemy's width, later we should pay attention to the all types of enemies
-                int spawnY = -70;
+                WaveManager.UpdateTransition();
+                return;
+            }
 
-                int enemyType = random.Next(5);
+            if (WaveManager.CurrentWave > WaveManager.MaxWaves) return;
 
-                switch (enemyType)
+            if (!WaveManager.CanSpawnInCurrentWave())
+            {
+                if(ActiveEnemies.Count == 0)
                 {
-                    case 0:
-                        ActiveEnemies.Add(new StandardEnemy(spawnX, spawnY));
-                        break;
-                    case 1:
-                        ActiveEnemies.Add(new ScoutEnemy(spawnX, spawnY));
-                        break;
-                    case 2:
-                        ActiveEnemies.Add(new ShooterEnemy(spawnX, spawnY));
-                        break;
-                    case 3:
-                        ActiveEnemies.Add(new TerroristEnemy(spawnX, spawnY));
-                        break;
-                    case 4:
-                        ActiveEnemies.Add(new HeavyTankEnemy(spawnX, spawnY));
-                        break;
+                    bool hasNext = WaveManager.StartNextWave();
+                    if (!hasNext)
+                        IsGameWon = true;
+                }
+                return;
+            }
+            
+            enemySpawnCounter++;
+            if(enemySpawnCounter >= WaveManager.GetSpawnRateForCurrentWave())
+            {
+                int spawnX = random.Next(50 , gameWidth - 70);//40 is enemy's width, later we should pay attention to the all types of enemies
+                int spawnY = -70;
+                int currentWave = WaveManager.CurrentWave;
+                Enemy? newEnemy = null;
 
+                if(currentWave == 10 && random.Next(100) < 25)
+                {
+                    newEnemy = new HeavyTankEnemy(spawnX, spawnY, currentWave);
+                }
+                else
+                {
+                    int roll = random.Next(100);
+
+                    int shooterChance = 10 + (currentWave * 4);
+                    int terroristChance = 5 + (currentWave * 3);
+
+                    if (roll < terroristChance)
+                    {
+                        newEnemy = new TerroristEnemy(spawnX, spawnY, currentWave);
+                    }else if(roll < terroristChance + shooterChance)
+                    {
+                        newEnemy = new ShooterEnemy(spawnX, spawnY, currentWave);
+                    }else if ( roll < 85)
+                    {
+                        newEnemy = new ScoutEnemy(spawnX, spawnY, currentWave);
+                    }
+                    else
+                    {
+                        newEnemy = new StandardEnemy(spawnX, spawnY, currentWave);
+                    }
+                }
+
+                if (newEnemy != null)
+                {
+                    ActiveEnemies.Add(newEnemy);
+                    WaveManager.RegisterSpawn();
                 }
 
                 enemySpawnCounter = 0;
@@ -174,6 +209,26 @@ namespace AP_Final_Project.Managers
             g.DrawString($"Score: {MainPlayer.Score}", hudFont, Brushes.White, 20, 20);
             g.DrawString($"HP: {MainPlayer.HP}", hudFont, Brushes.Crimson, gameWidth - 100, 20);
 
+            if(WaveManager.CurrentWave <= WaveManager.MaxWaves && !WaveManager.IsInWaveTransition)
+            {
+                g.DrawString($"WAVE: {WaveManager.CurrentWave} / {WaveManager.MaxWaves}", hudFont, Brushes.Gold, (gameWidth / 2) - 60, 20);
+            }
+
+            if(WaveManager.IsInWaveTransition && !IsGameOver && !IsGameWon!)
+            {
+                Font transitionFont = new Font("Arial", 42, FontStyle.Bold);
+                Font readyFont = new Font("Arial", 18, FontStyle.Regular);
+
+                string waveText = $"WAVE {WaveManager.CurrentWave}";
+                string readyText = "GET READY...";
+
+                SizeF waveSize = g.MeasureString(waveText, transitionFont);
+                SizeF readySize = g.MeasureString(readyText, readyFont);
+
+                g.FillRectangle(new SolidBrush(Color.FromArgb(150, 0, 0, 0)), 0 , 0 , gameWidth, gameHeight);
+                g.DrawString(waveText, transitionFont, Brushes.Gold, (gameWidth / 2) - (waveSize.Width / 2), (gameHeight / 2) - 60);
+                g.DrawString(readyText, readyFont, Brushes.White, (gameWidth / 2) - (readySize.Width / 2), (gameHeight / 2) + 20);
+            }
             if (IsGameOver)
             {
                 Font gameOverFont = new Font("Arial", 36, FontStyle.Bold);
@@ -186,6 +241,15 @@ namespace AP_Final_Project.Managers
                 g.DrawString(mainText, gameOverFont, Brushes.Red, (gameWidth / 2) - (mainSize.Width / 2), (gameHeight / 2) - 50);
                 g.DrawString(subText, scoreFont, Brushes.White, (gameWidth / 2) - (subSize.Width / 2), (gameHeight / 2) + 20);
 
+            }
+            if (IsGameWon)
+            {
+                Font winFont = new Font("Arial", 36, FontStyle.Bold);
+                string winText = "VICTORY! ALL WAVES CLEARED";
+                SizeF winSize = g.MeasureString(winText, winFont);
+
+                g.FillRectangle(new SolidBrush(Color.FromArgb(180, 0, 0, 0)), 0, 0, gameWidth, gameHeight);
+                g.DrawString(winText, winFont, Brushes.Lime, (gameWidth / 2) - (winSize.Width / 2), (gameHeight / 2) - 30);
             }
         }
 
