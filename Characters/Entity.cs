@@ -16,14 +16,14 @@ namespace AP_Final_Project.Characters
         public int HP {  get; set; }
 
 
-        protected Entity(int x, int y, int width, int height, int speed, int hP)
+        protected Entity(int x, int y, int width, int height, int speed, int hp)
         {
             X = x;
             Y = y;
             Width = width;
             Height = height;
             Speed = speed;
-            HP = hP;
+            HP = hp;
         }
 
         public abstract void Update();

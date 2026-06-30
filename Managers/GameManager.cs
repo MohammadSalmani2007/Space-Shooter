@@ -1,6 +1,7 @@
 ﻿using AP_Final_Project.Characters;
 using System;
 using System.Collections.Generic;
+using System.Formats.Nrbf;
 using System.Security.Policy;
 using System.Text;
 
@@ -12,6 +13,7 @@ namespace AP_Final_Project.Managers
         public List<Enemy> ActiveEnemies { get; private set; }
         public List<Bullet> ActiveBullets { get; private set; }
         public WaveManager WaveManager { get; private set; }
+        public List<Coin> ActiveCoins { get; private set; }
 
         private int gameWidth;
         private int gameHeight;
@@ -33,6 +35,7 @@ namespace AP_Final_Project.Managers
             ActiveEnemies = new List<Enemy>();
             ActiveBullets = new List<Bullet>();
             WaveManager = new WaveManager();
+            ActiveCoins = new List<Coin>();
         }
 
         public void Update()
@@ -152,6 +155,7 @@ namespace AP_Final_Project.Managers
             }
 
             foreach (var bullet in ActiveBullets) bullet.Update();
+            foreach (var coin in ActiveCoins) coin.Update();
         }
         private void CheckAllCollisions()
         {
@@ -168,8 +172,16 @@ namespace AP_Final_Project.Managers
 
                             if (enemy.HP <= 0)
                             {
-                                ActiveEnemies.Remove(enemy);
                                 MainPlayer.Score += enemy.ScoreValue;
+                                if(random.Next(100)< 40)
+                                {
+                                    int coinX = enemy.X + (enemy.Width / 2) - 10;
+                                    int coinY = enemy.Y + (enemy.Height / 2) - 10;
+                                    int generateValue = (random.Next(100) < 20) ? 5 : 1;
+
+                                    ActiveCoins.Add(new Coin(coinX, coinY, generateValue));
+                                }
+                                ActiveEnemies.Remove(enemy);
                             }
                             break;
                         }
@@ -194,19 +206,31 @@ namespace AP_Final_Project.Managers
                     ActiveEnemies.Remove(enemy);
                 }
             }
+            foreach(var coin in ActiveCoins.ToList())
+            {
+                if (coin.GetBounds().IntersectsWith(MainPlayer.GetBounds()))
+                {
+                    MainPlayer.Coins += coin.Value;
+                    ActiveCoins.Remove(coin);
+
+                }
+            }
         }
         private void CleanUpOutOfBounds()
         {
             ActiveBullets.RemoveAll(b => b.Y + b.Height < 0 || b.Y > gameHeight);
             ActiveEnemies.RemoveAll(e => e.Y > gameHeight);
+            ActiveCoins.RemoveAll(c => c.Y > gameHeight);
         }
         public void Draw(Graphics g)//Draw must be out of Game Form !!
         {
             MainPlayer.Draw(g);//Must be implement in Player.cs/and others...
             foreach (var bullet in ActiveBullets) bullet.Draw(g);
             foreach (var enemy in ActiveEnemies) enemy.Draw(g);
+            foreach (var coin in ActiveCoins) coin.Draw(g);
             Font hudFont = new Font("Arial", 14, FontStyle.Bold);
             g.DrawString($"Score: {MainPlayer.Score}", hudFont, Brushes.White, 20, 20);
+            g.DrawString($"Coins: {MainPlayer.Coins}", hudFont, Brushes.Gold, 20, 50);
             g.DrawString($"HP: {MainPlayer.HP}", hudFont, Brushes.Crimson, gameWidth - 100, 20);
 
             if(WaveManager.CurrentWave <= WaveManager.MaxWaves && !WaveManager.IsInWaveTransition)
@@ -235,11 +259,14 @@ namespace AP_Final_Project.Managers
                 Font scoreFont = new Font("Arial", 16, FontStyle.Regular);
                 string mainText = "GAME OVER";
                 string subText = $"Final Score: {MainPlayer.Score}";
+                string coinText = $"Coins: {MainPlayer.Coins}";
 
                 SizeF mainSize = g.MeasureString(mainText, gameOverFont);
                 SizeF subSize = g.MeasureString(subText, scoreFont);
+                SizeF coinSize = g.MeasureString(coinText, scoreFont);
                 g.DrawString(mainText, gameOverFont, Brushes.Red, (gameWidth / 2) - (mainSize.Width / 2), (gameHeight / 2) - 50);
                 g.DrawString(subText, scoreFont, Brushes.White, (gameWidth / 2) - (subSize.Width / 2), (gameHeight / 2) + 20);
+                g.DrawString(coinText, scoreFont, Brushes.LightGoldenrodYellow, (gameWidth / 2) - (coinSize.Width / 2), (gameHeight / 2) + 50);
 
             }
             if (IsGameWon)

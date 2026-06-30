@@ -17,10 +17,10 @@ namespace AP_Final_Project.Characters
         public int FireRate { get; set; }
         public int Score {  get; set; }
         public bool IsAlive => HP > 0;
-        public int Coins {  get; set; }
+        public int Coins {  get; set; } = 0;
 
         public Player(int x, int y)
-            : base(x, y, width: 50, height: 50, speed: 6, hP: 3)
+            : base(x, y, width: 50, height: 50, speed: 6, hp: 3)
         {
             Score = 0;
             Coins = 0;
