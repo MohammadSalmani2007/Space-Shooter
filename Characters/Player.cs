@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using System.Text;
 
 namespace AP_Final_Project.Characters
@@ -15,6 +16,7 @@ namespace AP_Final_Project.Characters
 
         public int FireRate { get; set; }
         public int Score {  get; set; }
+        public bool IsAlive => HP > 0;
         public int Coins {  get; set; }
 
         public Player(int x, int y)

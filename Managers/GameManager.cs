@@ -19,6 +19,8 @@ namespace AP_Final_Project.Managers
         private int enemySpawnCounter = 0;
         private Random random = new Random();
 
+        public bool IsGameOver { get; private set; } = false;
+
 
         public GameManager(int windowWidth, int windowHeight)
         {
@@ -32,12 +34,17 @@ namespace AP_Final_Project.Managers
 
         public void Update()
         {
+            if (IsGameOver) return;//If game is over , we freeze logic
             //I transferred position updatings into the UpdateEntityPositions method !
             HandleSpawning();
             HandlePlayerShooting();
             UpdateEntityPositions();
             CheckAllCollisions();
             CleanUpOutOfBounds();
+            if (!MainPlayer.IsAlive)
+            {
+                IsGameOver = true;
+            }
             
         }
         private void HandleSpawning()
@@ -127,6 +134,7 @@ namespace AP_Final_Project.Managers
                             if (enemy.HP <= 0)
                             {
                                 ActiveEnemies.Remove(enemy);
+                                MainPlayer.Score += enemy.ScoreValue;
                             }
                             break;
                         }
@@ -162,6 +170,23 @@ namespace AP_Final_Project.Managers
             MainPlayer.Draw(g);//Must be implement in Player.cs/and others...
             foreach (var bullet in ActiveBullets) bullet.Draw(g);
             foreach (var enemy in ActiveEnemies) enemy.Draw(g);
+            Font hudFont = new Font("Arial", 14, FontStyle.Bold);
+            g.DrawString($"Score: {MainPlayer.Score}", hudFont, Brushes.White, 20, 20);
+            g.DrawString($"HP: {MainPlayer.HP}", hudFont, Brushes.Crimson, gameWidth - 100, 20);
+
+            if (IsGameOver)
+            {
+                Font gameOverFont = new Font("Arial", 36, FontStyle.Bold);
+                Font scoreFont = new Font("Arial", 16, FontStyle.Regular);
+                string mainText = "GAME OVER";
+                string subText = $"Final Score: {MainPlayer.Score}";
+
+                SizeF mainSize = g.MeasureString(mainText, gameOverFont);
+                SizeF subSize = g.MeasureString(subText, scoreFont);
+                g.DrawString(mainText, gameOverFont, Brushes.Red, (gameWidth / 2) - (mainSize.Width / 2), (gameHeight / 2) - 50);
+                g.DrawString(subText, scoreFont, Brushes.White, (gameWidth / 2) - (subSize.Width / 2), (gameHeight / 2) + 20);
+
+            }
         }
 
         private void ApplyBoundryChecking()//Locking the player in the game window.
