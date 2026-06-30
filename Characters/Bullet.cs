@@ -32,19 +32,32 @@ namespace AP_Final_Project.Characters
 
     public class EnemyBullet : Bullet
     {
-        public EnemyBullet(int x, int y)
-            : base(x, y, width: 6, height: 15, speed: 7)
-        {
+        private double velocityX;
+        private double velocityY;
 
+        public double AngleInDegrees {  get; private set; }
+        public EnemyBullet(int x, int y, double velX, double velY, double angleInDegrees)
+            : base(x, y, width: 8, height: 8, speed: 0)
+        {
+            velocityX = velX;
+            velocityY = velY;
+            AngleInDegrees = angleInDegrees;
         }
         public override void Update()
         {
-            Y += Speed;
+            X += (int)velocityX;
+            Y += (int)velocityY;
         }
 
         public override void Draw(Graphics g)
         {
-            g.FillRectangle(Brushes.Red, X, Y, Width, Height);
+            var state = g.Save();//We'll change origin coordinates to the bullet's position
+
+            g.TranslateTransform(X + Width / 2, Y + Height / 2);
+            g.RotateTransform((float)AngleInDegrees + 90);//We assume that the image of bullet will be upward
+            g.FillRectangle(Brushes.Red, -2, -6, 4, 12);
+
+            g.Restore(state);
         }
     }
 }

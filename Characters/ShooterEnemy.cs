@@ -27,7 +27,7 @@ namespace AP_Final_Project.Characters
                 int bulletX = X + (Width / 2) - 3;
                 int bulletY = Y + Height;
 
-                activeBullets.Add(new EnemyBullet(bulletX, bulletY));
+                activeBullets.Add(new EnemyBullet(bulletX, bulletY, velX: 0, velY: 7, angleInDegrees: 90));// 90 + 90 = 180 , so downward
                 fireCoolDownCounter = 80;//We can change it to be random
             }
 

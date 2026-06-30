@@ -48,7 +48,7 @@ namespace AP_Final_Project.Managers
                 int spawnX = random.Next(0 , gameWidth - 70);//40 is enemy's width, later we should pay attention to the all types of enemies
                 int spawnY = -70;
 
-                int enemyType = random.Next(4);//We havn't implement HeavyTankEnemy yet ! So it's 4
+                int enemyType = random.Next(5);
 
                 switch (enemyType)
                 {
@@ -63,6 +63,9 @@ namespace AP_Final_Project.Managers
                         break;
                     case 3:
                         ActiveEnemies.Add(new TerroristEnemy(spawnX, spawnY));
+                        break;
+                    case 4:
+                        ActiveEnemies.Add(new HeavyTankEnemy(spawnX, spawnY));
                         break;
 
                 }
@@ -98,6 +101,9 @@ namespace AP_Final_Project.Managers
                 else if (enemy is TerroristEnemy terrorist)
                 {
                     terrorist.UpdateWithTarget(MainPlayer.X, MainPlayer.Y);
+                }else if(enemy is HeavyTankEnemy heavyTank)
+                {
+                    heavyTank.UpdateAndShoot8Way(ActiveBullets);
                 }
                 else
                     enemy.Update();
