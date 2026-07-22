@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace AP_Final_Project.Characters
+namespace Space_Shooter.Characters
 {
     public class HeavyTankEnemy : Enemy
     {

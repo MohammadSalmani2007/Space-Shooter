@@ -1,4 +1,4 @@
-﻿namespace AP_Final_Project.Forms
+﻿namespace Space_Shooter.Forms
 {
     partial class GameForm
     {

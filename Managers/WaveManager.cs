@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AP_Final_Project.Managers
+namespace Space_Shooter.Managers
 {
     public class WaveManager
     {

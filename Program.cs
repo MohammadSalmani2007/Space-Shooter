@@ -1,4 +1,4 @@
-namespace AP_Final_Project
+namespace Space_Shooter
 {
     internal static class Program
     {
