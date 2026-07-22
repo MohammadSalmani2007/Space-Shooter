@@ -86,14 +86,17 @@ namespace Space_Shooter.Forms
 
         private void GameForm_Load(object sender, EventArgs e)
         {
-            Player = Image.FromFile(@"D:\SpaceShooterGame\Resources\player.PNG");
-            PlayerBullet = Image.FromFile(@"D:\SpaceShooterGame\Resources\playerbullet.PNG");
-            EnemyBullet = Image.FromFile(@"D:\SpaceShooterGame\Resources\enemybullet.PNG");
-            Standard = Image.FromFile(@"D:\SpaceShooterGame\Resources\standard.PNG");
-            Shooter = Image.FromFile(@"D:\SpaceShooterGame\Resources\shooter.PNG");
-            Terrorist = Image.FromFile(@"D:\SpaceShooterGame\Resources\terrorist.PNG");
-            Scout = Image.FromFile(@"D:\SpaceShooterGame\Resources\scout.PNG");
-            HeavyTank = Image.FromFile(@"D:\SpaceShooterGame\Resources\heavytank.PNG");
+            string projectPath = Directory.GetParent(Application.StartupPath)!.Parent!.Parent!.Parent!.FullName;
+            string resPath = Path.Combine(projectPath, "Resources");
+
+            Player = Image.FromFile(Path.Combine(resPath, "player.PNG"));
+            PlayerBullet = Image.FromFile(Path.Combine(resPath, "playerbullet.PNG"));
+            EnemyBullet = Image.FromFile(Path.Combine(resPath, "enemybullet.PNG"));
+            Standard = Image.FromFile(Path.Combine(resPath, "standard.PNG"));
+            Shooter = Image.FromFile(Path.Combine(resPath, "shooter.PNG"));
+            Terrorist = Image.FromFile(Path.Combine(resPath, "terrorist.PNG"));
+            Scout = Image.FromFile(Path.Combine(resPath, "scout.PNG"));
+            HeavyTank = Image.FromFile(Path.Combine(resPath, "heavytank.PNG"));
         }
     }
 }
