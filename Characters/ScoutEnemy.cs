@@ -24,9 +24,10 @@ namespace AP_Final_Project.Characters
             X = centerX + (int)(Math.Sin(angle) * moveRange);
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g, Image image)
         {
-            g.FillRectangle(Brushes.DeepSkyBlue, X, Y, Width, Height);
+            RectangleF rect = new RectangleF(X, Y, Width, Height);
+            g.DrawImage(image, rect);
         }
     }
 }

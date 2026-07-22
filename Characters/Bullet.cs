@@ -15,7 +15,7 @@ namespace AP_Final_Project.Characters
     public class PlayerBullet : Bullet
     {
         public PlayerBullet(int x, int y)
-            : base(x, y, width: 6, height: 15, speed: 10)
+            : base(x, y, width: 10, height: 20, speed: 10)
         {
         }
 
@@ -24,9 +24,10 @@ namespace AP_Final_Project.Characters
             Y -= Speed;//Player bullets move upward
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g , Image image)
         {
-            g.FillRectangle(Brushes.Yellow, X, Y, Width, Height);
+            RectangleF rect = new RectangleF(X, Y, Width, Height);
+            g.DrawImage(image, rect);
         }
     }
 
@@ -37,7 +38,7 @@ namespace AP_Final_Project.Characters
 
         public double AngleInDegrees {  get; private set; }
         public EnemyBullet(int x, int y, double velX, double velY, double angleInDegrees)
-            : base(x, y, width: 8, height: 8, speed: 0)
+            : base(x, y, width: 10, height: 20, speed: 0)
         {
             velocityX = velX;
             velocityY = velY;
@@ -49,14 +50,14 @@ namespace AP_Final_Project.Characters
             Y += (int)velocityY;
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g, Image image)
         {
             var state = g.Save();//We'll change origin coordinates to the bullet's position
 
             g.TranslateTransform(X + Width / 2, Y + Height / 2);
             g.RotateTransform((float)AngleInDegrees + 90);//We assume that the image of bullet will be upward
-            g.FillRectangle(Brushes.Red, -2, -6, 4, 12);
-
+            RectangleF rect = new RectangleF(-Width/2, -Height/2, Width, Height);
+            g.DrawImage(image, rect);
             g.Restore(state);
         }
     }

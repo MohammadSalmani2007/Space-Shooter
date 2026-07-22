@@ -15,6 +15,7 @@ namespace AP_Final_Project.Managers
         public WaveManager WaveManager { get; private set; }
         public List<Coin> ActiveCoins { get; private set; }
 
+
         private int gameWidth;
         private int gameHeight;
 
@@ -82,7 +83,7 @@ namespace AP_Final_Project.Managers
                 int currentWave = WaveManager.CurrentWave;
                 Enemy? newEnemy = null;
 
-                if(currentWave == 10 && random.Next(100) < 25)
+                if(currentWave == 1 && random.Next(100) < 25)
                 {
                     newEnemy = new HeavyTankEnemy(spawnX, spawnY, currentWave);
                 }
@@ -189,7 +190,8 @@ namespace AP_Final_Project.Managers
                 }
                 if(bullet is EnemyBullet)
                 {
-                    if (bullet.GetBounds().IntersectsWith(MainPlayer.GetBounds()))
+                    if (bullet.GetBounds().IntersectsWith(MainPlayer.PlayerBounds().rectVert) ||
+                        bullet.GetBounds().IntersectsWith(MainPlayer.PlayerBounds().rectHor))
                     {
                         MainPlayer.HP--;
                         ActiveBullets.Remove(bullet);
@@ -200,7 +202,8 @@ namespace AP_Final_Project.Managers
 
             foreach (var enemy in ActiveEnemies.ToList())
             {
-                if (enemy.GetBounds().IntersectsWith(MainPlayer.GetBounds()))
+                if (enemy.GetBounds().IntersectsWith(MainPlayer.PlayerBounds().rectVert) ||
+                    enemy.GetBounds().IntersectsWith(MainPlayer.PlayerBounds().rectHor))
                 {
                     MainPlayer.HP--;
                     ActiveEnemies.Remove(enemy);
@@ -222,12 +225,31 @@ namespace AP_Final_Project.Managers
             ActiveEnemies.RemoveAll(e => e.Y > gameHeight);
             ActiveCoins.RemoveAll(c => c.Y > gameHeight);
         }
-        public void Draw(Graphics g)//Draw must be out of Game Form !!
+        public void Draw(Graphics g ,Image Player,Image PlayerBullet, Image EnemyBullet, Image Standard,
+                         Image Shooter, Image Terrorist, Image Scout, Image HeavyTank)//Draw must be out of Game Form !!
         {
-            MainPlayer.Draw(g);//Must be implement in Player.cs/and others...
-            foreach (var bullet in ActiveBullets) bullet.Draw(g);
-            foreach (var enemy in ActiveEnemies) enemy.Draw(g);
-            foreach (var coin in ActiveCoins) coin.Draw(g);
+            MainPlayer.Draw(g, Player);//Must be implement in Player.cs/and others...
+            foreach (var bullet in ActiveBullets)
+            {
+                if (bullet is PlayerBullet playerbullet)
+                    bullet.Draw(g, PlayerBullet);
+                if (bullet is EnemyBullet enemybullet)
+                    bullet.Draw(g, EnemyBullet);
+            }
+            foreach (var enemy in ActiveEnemies) 
+            {
+                if(enemy is StandardEnemy standard)
+                    enemy.Draw(g , Standard);
+                if (enemy is ShooterEnemy shooter)
+                    enemy.Draw(g, Shooter);
+                if (enemy is TerroristEnemy terrorist)
+                    enemy.Draw(g, Terrorist);
+                if (enemy is ScoutEnemy scout)
+                    enemy.Draw(g, Scout);
+                if (enemy is HeavyTankEnemy heavyTank)
+                    enemy.Draw(g, HeavyTank);
+            }
+            foreach (var coin in ActiveCoins) coin.Draw(g , Player);
             Font hudFont = new Font("Arial", 14, FontStyle.Bold);
             g.DrawString($"Score: {MainPlayer.Score}", hudFont, Brushes.White, 20, 20);
             g.DrawString($"Coins: {MainPlayer.Coins}", hudFont, Brushes.Gold, 20, 50);

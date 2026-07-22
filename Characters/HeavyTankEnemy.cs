@@ -48,9 +48,10 @@ namespace AP_Final_Project.Characters
             Y += Speed;
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g, Image image)
         {
-            g.FillRectangle(Brushes.SlateGray, X, Y, Width, Height);
+            RectangleF rect = new RectangleF(X, Y, Width, Height);
+            g.DrawImage(image, rect);
         }
     }
 }

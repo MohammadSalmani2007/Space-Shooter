@@ -28,7 +28,7 @@ namespace AP_Final_Project.Characters
 
         public abstract void Update();
 
-        public virtual void Draw(Graphics g)
+        public virtual void Draw(Graphics g, Image image)
         {
             g.FillRectangle(Brushes.White, X, Y, Width, Height);
         }

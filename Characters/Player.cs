@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Security.Policy;
 using System.Text;
 
@@ -20,7 +21,7 @@ namespace AP_Final_Project.Characters
         public int Coins {  get; set; } = 0;
 
         public Player(int x, int y)
-            : base(x, y, width: 50, height: 50, speed: 6, hp: 3)
+            : base(x, y, width: 80, height: 80, speed: 6, hp: 3)
         {
             Score = 0;
             Coins = 0;
@@ -44,9 +45,18 @@ namespace AP_Final_Project.Characters
 
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g, Image image)
         {
-            g.FillRectangle(Brushes.LimeGreen, X, Y, Width, Height);
+            RectangleF rect = new RectangleF(X, Y, Width, Height);
+            g.DrawImage(image ,rect );
+        }
+
+        public (Rectangle rectVert, Rectangle rectHor) PlayerBounds()
+        {
+            Rectangle rectHor =  new Rectangle(X, Y + 50, Width, Height - 50);
+            Rectangle rectVer = new Rectangle(X + 30, Y, Width - 60, Height);
+            return (rectVer, rectHor);
+
         }
     }
 }
