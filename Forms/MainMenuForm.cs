@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AP_Final_Project.Forms
+namespace Space_Shooter.Forms
 {
     public partial class MainMenuForm : Form
     {

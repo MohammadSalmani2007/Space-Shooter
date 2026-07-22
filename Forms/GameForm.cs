@@ -1,4 +1,4 @@
-﻿using AP_Final_Project.Managers;
+﻿using Space_Shooter.Managers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +8,7 @@ using System.Drawing.Design;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AP_Final_Project.Forms
+namespace Space_Shooter.Forms
 {
     public partial class GameForm : Form
     {

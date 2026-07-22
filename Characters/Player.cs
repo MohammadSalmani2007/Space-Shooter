@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.Security.Policy;
 using System.Text;
 
-namespace AP_Final_Project.Characters
+namespace Space_Shooter.Characters
 {
     public class Player : Entity
     {
@@ -30,7 +30,7 @@ namespace AP_Final_Project.Characters
 
         public float RemainingShieldTime => IsShieldActive ? shieldTimer / 50f : 0;
         public float RemainingTripleShotTime => IsTripleShotActive ? tripleShotTimer / 50f : 0;
-        public float RemainingFireRateTime => IsFireRateBoosted ? fireRateTimer / 50 : 0;
+        public float RemainingFireRateTime => IsFireRateBoosted ? fireRateTimer / 50f : 0;
 
         public Player(int x, int y)
             : base(x, y, width: 80, height: 80, speed: 6, hp: 3)

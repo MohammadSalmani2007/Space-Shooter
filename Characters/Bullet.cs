@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AP_Final_Project.Characters
+namespace Space_Shooter.Characters
 {
     public abstract class Bullet : Entity//We will have child classes for Bullet, later.
     {

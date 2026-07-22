@@ -1,4 +1,4 @@
-﻿using AP_Final_Project.Characters;
+﻿using Space_Shooter.Characters;
 using System;
 using System.Collections.Generic;
 using System.Formats.Nrbf;
@@ -6,7 +6,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Windows.Markup;
 
-namespace AP_Final_Project.Managers
+namespace Space_Shooter.Managers
 {
     public class GameManager//All the logic is here :)
     {
@@ -350,7 +350,7 @@ namespace AP_Final_Project.Managers
                 g.DrawString($"WAVE: {WaveManager.CurrentWave} / {WaveManager.MaxWaves}", hudFont, Brushes.Gold, (gameWidth / 2) - 60, 20);
             }
 
-            if(WaveManager.IsInWaveTransition && !IsGameOver && !IsGameWon!)
+            if(WaveManager.IsInWaveTransition && !IsGameOver && !IsGameWon)
             {
                 Font transitionFont = new Font("Arial", 42, FontStyle.Bold);
                 Font readyFont = new Font("Arial", 18, FontStyle.Regular);
