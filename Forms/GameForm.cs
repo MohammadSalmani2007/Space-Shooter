@@ -14,6 +14,15 @@ namespace AP_Final_Project.Forms
     {
         private GameManager gameManager;
         private System.Windows.Forms.Timer gameTimer;
+
+        private Image Player;
+        private Image PlayerBullet;
+        private Image EnemyBullet;
+        private Image Standard;
+        private Image Shooter;
+        private Image Terrorist;
+        private Image Scout;
+        private Image HeavyTank;
         public GameForm()
         {
             InitializeComponent();
@@ -48,7 +57,7 @@ namespace AP_Final_Project.Forms
 
         private void GameForm_Paint(object? sender, PaintEventArgs e)
         {
-            gameManager.Draw(e.Graphics);
+            gameManager.Draw(e.Graphics, Player, PlayerBullet , EnemyBullet, Standard, Shooter, Terrorist, Scout, HeavyTank);
         }
 
         private void GameForm_KeyDown(object? sender, KeyEventArgs e)
@@ -77,7 +86,14 @@ namespace AP_Final_Project.Forms
 
         private void GameForm_Load(object sender, EventArgs e)
         {
-
+            Player = Image.FromFile(@"D:\SpaceShooterGame\Resources\player.PNG");
+            PlayerBullet = Image.FromFile(@"D:\SpaceShooterGame\Resources\playerbullet.PNG");
+            EnemyBullet = Image.FromFile(@"D:\SpaceShooterGame\Resources\enemybullet.PNG");
+            Standard = Image.FromFile(@"D:\SpaceShooterGame\Resources\standard.PNG");
+            Shooter = Image.FromFile(@"D:\SpaceShooterGame\Resources\shooter.PNG");
+            Terrorist = Image.FromFile(@"D:\SpaceShooterGame\Resources\terrorist.PNG");
+            Scout = Image.FromFile(@"D:\SpaceShooterGame\Resources\scout.PNG");
+            HeavyTank = Image.FromFile(@"D:\SpaceShooterGame\Resources\heavytank.PNG");
         }
     }
 }

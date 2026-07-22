@@ -18,7 +18,7 @@ namespace AP_Final_Project.Characters
             Y += Speed;
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g, Image image)
         {
             if(Value == 5)
             {
