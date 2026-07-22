@@ -328,7 +328,24 @@ namespace AP_Final_Project.Managers
             g.DrawString($"Coins: {MainPlayer.Coins}", hudFont, Brushes.Gold, 20, 50);
             g.DrawString($"HP: {MainPlayer.HP}", hudFont, Brushes.Crimson, gameWidth - 100, 20);
 
-            if(WaveManager.CurrentWave <= WaveManager.MaxWaves && !WaveManager.IsInWaveTransition)
+            int puY = 80;
+            if (MainPlayer.IsShieldActive)
+            {
+                g.DrawString($"🛡️ Shield: {MainPlayer.RemainingShieldTime:F1}s", hudFont, Brushes.Cyan, 20, puY);
+                puY += 25;
+            }
+            if (MainPlayer.IsTripleShotActive)
+            {
+                g.DrawString($"🔱 Triple: {MainPlayer.RemainingTripleShotTime:F1}s", hudFont, Brushes.Orange, 20, puY);
+                puY += 25;
+            }
+            if (MainPlayer.IsFireRateBoosted)
+            {
+                g.DrawString($"⚡ FireRate: {MainPlayer.RemainingFireRateTime:F1}s", hudFont, Brushes.Magenta, 20, puY);
+                puY += 25;
+            }
+
+            if (WaveManager.CurrentWave <= WaveManager.MaxWaves && !WaveManager.IsInWaveTransition)
             {
                 g.DrawString($"WAVE: {WaveManager.CurrentWave} / {WaveManager.MaxWaves}", hudFont, Brushes.Gold, (gameWidth / 2) - 60, 20);
             }
