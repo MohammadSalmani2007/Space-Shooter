@@ -15,7 +15,7 @@ namespace AP_Final_Project.Characters
 
 
             this.Speed = (int)(speed * (1 + 0.1 * currentWave));
-            this.HP = hp + (2 * currentWave);
+            this.HP = hp + (int)(0.75 * currentWave);
         }
     }
 }

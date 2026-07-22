@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Formats.Nrbf;
 using System.Security.Policy;
 using System.Text;
+using System.Windows.Markup;
 
 namespace AP_Final_Project.Managers
 {
@@ -14,6 +15,7 @@ namespace AP_Final_Project.Managers
         public List<Bullet> ActiveBullets { get; private set; }
         public WaveManager WaveManager { get; private set; }
         public List<Coin> ActiveCoins { get; private set; }
+        public List<PowerUp> ActivePowerUps { get; private set; }
 
 
         private int gameWidth;
@@ -37,6 +39,7 @@ namespace AP_Final_Project.Managers
             ActiveBullets = new List<Bullet>();
             WaveManager = new WaveManager();
             ActiveCoins = new List<Coin>();
+            ActivePowerUps = new List<PowerUp>();
         }
 
         public void Update()
@@ -83,7 +86,7 @@ namespace AP_Final_Project.Managers
                 int currentWave = WaveManager.CurrentWave;
                 Enemy? newEnemy = null;
 
-                if(currentWave == 1 && random.Next(100) < 25)
+                if(currentWave == 10 && random.Next(100) < 25)
                 {
                     newEnemy = new HeavyTankEnemy(spawnX, spawnY, currentWave);
                 }
@@ -119,6 +122,32 @@ namespace AP_Final_Project.Managers
                 enemySpawnCounter = 0;
             }
         }
+        private void HandlePowerUps(Enemy enemy)
+        {
+            int powerUpX = enemy.X + (enemy.Width / 2) - 10;
+            int powerUpY = enemy.Y + (enemy.Height / 2) - 10;
+            int random_pu = random.Next(4);
+            PowerUpType type;
+            switch (random_pu)
+            {
+                case 0:
+                    type = PowerUpType.TripleShot;
+                    break;
+                case 1:
+                    type = PowerUpType.Shield;
+                    break;
+                case 2:
+                    type = PowerUpType.HealthPack;
+                    break;
+                case 3:
+                    type = PowerUpType.FireRateBoooster;
+                    break;
+                default:
+                    type = PowerUpType.HealthPack;
+                    break;
+            }
+            ActivePowerUps.Add(new PowerUp(powerUpX, powerUpY, type));
+        }
         private void HandlePlayerShooting()
         {
             if (shotCooldownCounter > 0) shotCooldownCounter--;
@@ -126,10 +155,32 @@ namespace AP_Final_Project.Managers
             if(MainPlayer.IsShooting && shotCooldownCounter == 0)
             {
                 int bulletX = MainPlayer.X + (MainPlayer.Width / 2) - 3;
-                int bullerY = MainPlayer.Y;
+                int bulletY = MainPlayer.Y;
+                int bulletSpeed = 12;
 
-                ActiveBullets.Add(new PlayerBullet(bulletX, bullerY));
-                shotCooldownCounter = MainPlayer.FireRate / 20;
+                if (MainPlayer.IsTripleShotActive)
+                {
+                    int[] angles = { -120 , -90 , -60};
+                    
+                    foreach(int angle in angles)
+                    {
+                        double angleInRadians = angle * (Math.PI / 180.0);
+                        double velX = bulletSpeed * Math.Cos(angleInRadians);
+                        double velY = bulletSpeed * Math.Sin(angleInRadians);
+
+                        ActiveBullets.Add(new PlayerBullet(bulletX, bulletY, velX, velY, angle));
+                    }
+                }
+                else
+                {
+                    double velX = 0;
+                    double velY = -bulletSpeed;
+                    ActiveBullets.Add(new PlayerBullet(bulletX, bulletY, velX, velY, 270));
+                }
+
+                //shotCooldownCounter = MainPlayer.FireRate / 20;
+                int baseCoolDown = Math.Max(5, MainPlayer.FireRate / 20);
+                shotCooldownCounter = MainPlayer.IsFireRateBoosted ? baseCoolDown/2 : baseCoolDown;
             }
         }
 
@@ -157,6 +208,7 @@ namespace AP_Final_Project.Managers
 
             foreach (var bullet in ActiveBullets) bullet.Update();
             foreach (var coin in ActiveCoins) coin.Update();
+            foreach( var pu in ActivePowerUps) pu.Update();
         }
         private void CheckAllCollisions()
         {
@@ -174,13 +226,18 @@ namespace AP_Final_Project.Managers
                             if (enemy.HP <= 0)
                             {
                                 MainPlayer.Score += enemy.ScoreValue;
-                                if(random.Next(100)< 40)
+                                int random_spawn = random.Next(100);
+                                if(random_spawn < 50)
                                 {
                                     int coinX = enemy.X + (enemy.Width / 2) - 10;
                                     int coinY = enemy.Y + (enemy.Height / 2) - 10;
                                     int generateValue = (random.Next(100) < 20) ? 5 : 1;
 
                                     ActiveCoins.Add(new Coin(coinX, coinY, generateValue));
+                                }
+                                if(random_spawn >= 50 && random_spawn <= 80)
+                                {
+                                    HandlePowerUps(enemy);
                                 }
                                 ActiveEnemies.Remove(enemy);
                             }
@@ -193,7 +250,10 @@ namespace AP_Final_Project.Managers
                     if (bullet.GetBounds().IntersectsWith(MainPlayer.PlayerBounds().rectVert) ||
                         bullet.GetBounds().IntersectsWith(MainPlayer.PlayerBounds().rectHor))
                     {
-                        MainPlayer.HP--;
+                        if (!MainPlayer.IsShieldActive)
+                        {
+                            MainPlayer.HP--;
+                        }
                         ActiveBullets.Remove(bullet);
                     }
 
@@ -205,7 +265,10 @@ namespace AP_Final_Project.Managers
                 if (enemy.GetBounds().IntersectsWith(MainPlayer.PlayerBounds().rectVert) ||
                     enemy.GetBounds().IntersectsWith(MainPlayer.PlayerBounds().rectHor))
                 {
-                    MainPlayer.HP--;
+                    if (!MainPlayer.IsShieldActive)
+                    {
+                        MainPlayer.HP--;
+                    }
                     ActiveEnemies.Remove(enemy);
                 }
             }
@@ -218,12 +281,21 @@ namespace AP_Final_Project.Managers
 
                 }
             }
+            foreach (var pu in ActivePowerUps.ToList())
+            {
+                if (pu.GetBounds().IntersectsWith(MainPlayer.GetBounds()))
+                {
+                    MainPlayer.ApplyPowerUpEffect(pu.Type);
+                    ActivePowerUps.Remove(pu);
+                }
+            }
         }
         private void CleanUpOutOfBounds()
         {
             ActiveBullets.RemoveAll(b => b.Y + b.Height < 0 || b.Y > gameHeight);
             ActiveEnemies.RemoveAll(e => e.Y > gameHeight);
             ActiveCoins.RemoveAll(c => c.Y > gameHeight);
+            ActivePowerUps.RemoveAll(pu => pu.Y > gameHeight);
         }
         public void Draw(Graphics g ,Image Player,Image PlayerBullet, Image EnemyBullet, Image Standard,
                          Image Shooter, Image Terrorist, Image Scout, Image HeavyTank)//Draw must be out of Game Form !!
@@ -250,6 +322,7 @@ namespace AP_Final_Project.Managers
                     enemy.Draw(g, HeavyTank);
             }
             foreach (var coin in ActiveCoins) coin.Draw(g , Player);
+            foreach(var pu in ActivePowerUps) pu.Draw(g , Player);
             Font hudFont = new Font("Arial", 14, FontStyle.Bold);
             g.DrawString($"Score: {MainPlayer.Score}", hudFont, Brushes.White, 20, 20);
             g.DrawString($"Coins: {MainPlayer.Coins}", hudFont, Brushes.Gold, 20, 50);

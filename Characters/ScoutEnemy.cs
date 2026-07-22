@@ -12,7 +12,7 @@ namespace AP_Final_Project.Characters
 
 
         public ScoutEnemy(int x, int y, int wave)
-            : base(x, y, width: 35, height: 35, speed: 5, hp: 1, scoreValue: 20, currentWave: wave)
+            : base(x, y, width: 35, height: 35, speed: 4, hp: 1, scoreValue: 20, currentWave: wave)
         {
             centerX = x;
         }
