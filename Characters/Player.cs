@@ -20,6 +20,14 @@ namespace AP_Final_Project.Characters
         public bool IsAlive => HP > 0;
         public int Coins {  get; set; } = 0;
 
+        public bool IsShieldActive => shieldTimer > 0;
+        public bool IsTripleShotActive => tripleShotTimer > 0;
+        public bool IsFireRateBoosted => fireRateTimer > 0;
+
+        private int shieldTimer = 0;
+        private int tripleShotTimer = 0;
+        private int fireRateTimer = 0;
+
         public Player(int x, int y)
             : base(x, y, width: 80, height: 80, speed: 6, hp: 3)
         {
@@ -35,6 +43,24 @@ namespace AP_Final_Project.Characters
             IsShooting = false;
 
         }
+        public void ApplyPowerUpEffect(PowerUpType type)
+        {
+            switch (type)
+            {
+                case PowerUpType.HealthPack:
+                    if (HP < 5) HP++;
+                    break;
+                case PowerUpType.Shield:
+                    shieldTimer = 250;
+                    break;
+                case PowerUpType.TripleShot:
+                    tripleShotTimer = 500;
+                    break;
+                case PowerUpType.FireRateBoooster:
+                    fireRateTimer = 500;
+                    break;
+            }
+        }
 
         public override void Update()
         {
@@ -43,12 +69,18 @@ namespace AP_Final_Project.Characters
             if (IsMovingUp) Y -= Speed;
             if (IsMovingDown) Y += Speed;
 
+            if (shieldTimer > 0) shieldTimer--;
+            if (tripleShotTimer > 0) tripleShotTimer--;
+            if (fireRateTimer > 0) fireRateTimer--;
         }
 
         public override void Draw(Graphics g, Image image)
         {
             RectangleF rect = new RectangleF(X, Y, Width, Height);
             g.DrawImage(image ,rect );
+
+            if (IsShieldActive)
+                g.DrawEllipse(new Pen(Color.Cyan, 3), X - 5, Y - 5, Width + 10, Height + 10);
         }
 
         public (Rectangle rectVert, Rectangle rectHor) PlayerBounds()

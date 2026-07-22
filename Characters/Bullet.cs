@@ -14,20 +14,32 @@ namespace AP_Final_Project.Characters
 
     public class PlayerBullet : Bullet
     {
-        public PlayerBullet(int x, int y)
-            : base(x, y, width: 10, height: 20, speed: 10)
+        private double velocityX;
+        private double velocityY;
+        public double AngleInDegrees {  get; private set; }
+        public PlayerBullet(int x, int y, double velocityX, double velocityY, double angleInDegrees)
+            : base(x, y, width: 10, height: 20, speed: 0)
         {
+            this.velocityX = velocityX;
+            this.velocityY = velocityY;
+            AngleInDegrees = angleInDegrees;
         }
 
         public override void Update()
         {
-            Y -= Speed;//Player bullets move upward
+            X += (int)velocityX;
+            Y += (int)velocityY;
         }
 
         public override void Draw(Graphics g , Image image)
         {
-            RectangleF rect = new RectangleF(X, Y, Width, Height);
+            var state = g.Save();
+
+            g.TranslateTransform(X + Width / 2, Y + Height / 2);
+            g.RotateTransform((float)AngleInDegrees + 90);//We assume that the image of bullet will be upward
+            RectangleF rect = new RectangleF(-Width / 2, -Height / 2, Width, Height);
             g.DrawImage(image, rect);
+            g.Restore(state);
         }
     }
 
